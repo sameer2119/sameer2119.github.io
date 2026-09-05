@@ -115,29 +115,20 @@
   }
 
   function initHudControls() {
-    // CRT & Laser Scanline Overlay Toggle
-    const crtBtn = document.getElementById('btn-toggle-crt');
-    const crtOverlay = document.getElementById('crt-overlay');
+    // Photo Laser & Scanline Scanner Toggle (Restricted to photo avatar only)
+    const scanBtn = document.getElementById('btn-toggle-crt');
+    const hudImgContainer = document.querySelector('.hud-image-container');
 
-    if (crtBtn) {
-      // Set initial active state based on body class
-      const initialCrt = document.body.classList.contains('crt-enabled');
-      crtBtn.classList.toggle('active', initialCrt);
+    if (scanBtn) {
+      scanBtn.classList.add('active');
 
-      crtBtn.addEventListener('click', () => {
-        const isEnabled = document.body.classList.toggle('crt-enabled');
-        crtBtn.classList.toggle('active', isEnabled);
-
-        if (crtOverlay) {
-          crtOverlay.style.display = isEnabled ? 'block' : 'none';
+      scanBtn.addEventListener('click', () => {
+        const isCurrentlyActive = scanBtn.classList.toggle('active');
+        if (hudImgContainer) {
+          hudImgContainer.classList.toggle('photo-scan-disabled', !isCurrentlyActive);
         }
 
-        // Toggle laser lines on avatar
-        document.querySelectorAll('.hud-scanline-v, .hud-scanline-h, .hud-scanline-diag').forEach((scan) => {
-          scan.style.display = isEnabled ? 'block' : 'none';
-        });
-
-        showToast(`SCANLINES: ${isEnabled ? 'ENABLED' : 'DISABLED'}`, isEnabled ? 'success' : 'info');
+        showToast(`PHOTO SCANNER: ${isCurrentlyActive ? 'ENABLED' : 'DISABLED'}`, isCurrentlyActive ? 'success' : 'info');
         playCyberBeep(520, 0.05);
       });
     }
@@ -801,7 +792,114 @@
   }
 
   // --------------------------------------------------------------------------
-  // 11. Initializer Bootstrap
+  // 11. Glass Card Specular Corner Sparkles (Static Glass)
+  // --------------------------------------------------------------------------
+  function initGlassSparkles() {
+    const cardSelectors = [
+      '.hud-card',
+      '.service-card',
+      '.project-cyber-card',
+      '.cyber-panel',
+      '.disc-box',
+      '.int-cell',
+      '.cyber-terminal-card',
+      '.direct-comm-card',
+      '.contact-cyber-form-panel',
+      '.affiliations-hud'
+    ];
+
+    const cards = document.querySelectorAll(cardSelectors.join(','));
+
+    cards.forEach((card) => {
+      // Clear any inline transform styles so CSS handles pure scale zoom
+      card.style.transform = '';
+      card.style.perspective = '';
+      card.style.transition = '';
+
+      // Inject specular corner star glints matching reference
+      if (!card.querySelector('.glass-glint.top-left')) {
+        const glintTL = document.createElement('div');
+        glintTL.className = 'glass-glint top-left';
+        card.appendChild(glintTL);
+      }
+      if (!card.querySelector('.glass-glint.top-right')) {
+        const glintTR = document.createElement('div');
+        glintTR.className = 'glass-glint top-right';
+        card.appendChild(glintTR);
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 12. Subtle 3D Genomics DNA Helix Watermark Generator (Low Visibility)
+  // --------------------------------------------------------------------------
+  function initDnaWatermarks() {
+    const cardSelectors = [
+      '.hud-card',
+      '.affiliations-hud',
+      '.cyber-terminal-card',
+      '.cyber-stat-card',
+      '.research-card',
+      '.pub-card',
+      '.project-card',
+      '.stack-category-card',
+      '.timeline-node',
+      '.cyber-contact-card',
+      '.direct-comm-card',
+      '.contact-cyber-form-panel',
+      '.service-card',
+      '.project-cyber-card',
+      '.cyber-panel',
+      '.disc-box',
+      '.int-cell'
+    ];
+
+    const cards = document.querySelectorAll(cardSelectors.join(','));
+
+    // Clean up any old water droplet layers
+    document.querySelectorAll('.water-droplets-layer, .water-drop').forEach((el) => el.remove());
+
+    const dnaSvgContent = `
+      <svg class="card-dna-watermark" viewBox="0 0 100 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M25 10 Q50 35 75 60 Q50 85 25 110 Q50 135 75 160 Q50 185 25 195" stroke="#00f3ff" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M75 10 Q50 35 25 60 Q50 85 75 110 Q50 135 25 160 Q50 185 75 195" stroke="#00ff41" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="28" y1="20" x2="72" y2="20" stroke="#00f3ff" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="42" y1="40" x2="58" y2="40" stroke="#a855f7" stroke-width="1.2"/>
+        <line x1="28" y1="60" x2="72" y2="60" stroke="#00ff41" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="42" y1="80" x2="58" y2="80" stroke="#a855f7" stroke-width="1.2"/>
+        <line x1="28" y1="100" x2="72" y2="100" stroke="#00f3ff" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="42" y1="120" x2="58" y2="120" stroke="#a855f7" stroke-width="1.2"/>
+        <line x1="28" y1="140" x2="72" y2="140" stroke="#00ff41" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="42" y1="160" x2="58" y2="160" stroke="#a855f7" stroke-width="1.2"/>
+        <line x1="28" y1="180" x2="72" y2="180" stroke="#00f3ff" stroke-width="1" stroke-dasharray="2 3"/>
+        <circle cx="25" cy="10" r="2.2" fill="#00f3ff"/>
+        <circle cx="75" cy="10" r="2.2" fill="#00ff41"/>
+        <circle cx="75" cy="60" r="2.2" fill="#00f3ff"/>
+        <circle cx="25" cy="60" r="2.2" fill="#00ff41"/>
+        <circle cx="25" cy="110" r="2.2" fill="#00f3ff"/>
+        <circle cx="75" cy="110" r="2.2" fill="#00ff41"/>
+        <circle cx="75" cy="160" r="2.2" fill="#00f3ff"/>
+        <circle cx="25" cy="160" r="2.2" fill="#00ff41"/>
+      </svg>
+    `;
+
+    cards.forEach((card) => {
+      const currentPos = window.getComputedStyle(card).position;
+      if (currentPos === 'static') {
+        card.style.position = 'relative';
+      }
+
+      if (!card.querySelector('.card-dna-watermark')) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = dnaSvgContent.trim();
+        const svgEl = tempDiv.firstChild;
+        card.appendChild(svgEl);
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 13. Initializer Bootstrap
   // --------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
     initMatrixRain();
@@ -812,6 +910,8 @@
     initNavigation();
     initCounters();
     initContactForm();
+    initGlassSparkles();
+    initDnaWatermarks();
   });
 
   if (document.readyState !== 'loading') {
@@ -823,5 +923,7 @@
     initNavigation();
     initCounters();
     initContactForm();
+    initGlassSparkles();
+    initDnaWatermarks();
   }
 })();
